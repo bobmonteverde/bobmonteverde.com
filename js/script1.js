@@ -14,14 +14,13 @@ var animate;
         $list = $('<select id="translateLang"></select>').appendTo($translate);
         
     for (lang in google.language.Languages) {
-      $('<option value="' + google.language.Languages[lang] + '" ' + (lang == 'ENGLISH' ? 'selected' : '') + '>' + lang + '</option>')
+      var translatable = google.language.isTranslatable(google.language.Languages[lang]);
+      //console.log(lang, translatable);
+
+      if (translatable) $('<option value="' + google.language.Languages[lang] + '" ' + (lang == 'ENGLISH' ? 'selected' : '') + '>' + lang + '</option>')
         .appendTo($list);
     }
-
-    $list.change(function() {
-      translateSite($(this).val());
-    });
-  };
+  }
 
   function translateSite(lang) {
     (function stepSite(set) {
@@ -35,9 +34,8 @@ var animate;
           CURRENTLANG = lang;
       })
     })($('#menu li'));
-    $('.menu').css('font-size', ((lang == 'en') ? '28px' : '20px'));
-  };
-  window.translateSite = translateSite;
+    $('.menu').css('font-size', ((lang == 'en') ? '28px' : '20px')); //TODO: should calc this based on menu text width
+  }
 
   function translateString(text, obj) {
     if (CURRENTLANG == 'en') obj.html(text);
@@ -45,8 +43,7 @@ var animate;
     google.language.translate(text, 'en', CURRENTLANG, function(result) {
       obj.html(result.translation);
     });
-  };
-  window.translateString = translateString;
+  }
 
 
   animate = {
@@ -264,6 +261,10 @@ var animate;
 
 
     //Binds
+    $('#translateLang').live('change', function() {
+       translateSite($(this).val());
+       menuClose();
+    });
     $.each(COLORS, function(index, color) {
        $('.chooseAcolor.' + color).live('click', function(){
           changeColor(color);
