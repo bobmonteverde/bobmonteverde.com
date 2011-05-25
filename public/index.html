@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>Bob Monteverde .com</title>
+
+    <link href="css/style1.css" rel="stylesheet" type="text/css"> 
+
+  </head>
+
+  <body>
+
+    <div id="container" class="container">
+      <div id="wrapper" class="wrapper"></div>
+    </div>
+
+
+    <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAA9W0VHhIZAoCXseO5I-jAYBQQP-d19l_gGdq7GX80wOx26wJiRRSb6JZQ_riH9basbgLIxaG5CIv2hw"></script>
+    <script type="text/javascript">
+      google.load('jquery', '1.5.2');
+      google.load('webfont', '1');
+      google.setOnLoadCallback(function() {
+        WebFont.load({
+          google: {
+            families: [ 'Molengo', 'Quattrocento Sans' ]
+            },
+            active: animate.next
+        });
+      });
+
+      google.load('language', '1');
+
+    </script>
+    <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>-->
+    <script>!window.jQuery && document.write('<scr'+'ipt src="js/lib/jquery.min.js"></scr'+'ipt>')</script> 
+
+    <script type="text/javascript" src="js/everydayjs.prototypes-d1.js"></script> 
+    <script type="text/javascript" src="js/everydayjs.animate-d1.js"></script> 
+    <script type="text/javascript" src="js/script1.js"></script> 
+
+
+    <script type="text/javascript">
+
+      /******* SETTINGS *******/
+      var TITLE = "Bob Monteverde .com",
+          MENU = ['projects', 'about', 'contact'],
+          COLORS = ['black', 'green', 'blue', 'lightblue', 'grassgreen', 'orange', 'red'],
+          PAGES = {},
+          CURRENTLANG = 'en';
+
+      COLORS.index = 0;
+
+      $.each(MENU, function(index, pagename){ PAGES[pagename] = []; })
+
+      PAGES.projects.push('GitHub: <a href="https://github.com/bobmonteverde">https://github.com/bobmonteverde</a>');
+      PAGES.projects.push('More projects to come soon.');
+      PAGES.projects.push('New projects will most likely show up on my GitHub before being listed here.');
+
+      PAGES.about.push('I am currently working as a software engineer for <a href="https://www.novus.com">Novus Partners</a>, in NYC.  I work primarily on the front end of our web platform, developing interactive data visualizations.');
+      PAGES.about.push('We are hiring at Novus Partners.  If you are an experienced Scala developer and interested in working in NYC, please <a href="#" class="contact">contact me</a>.');
+
+      PAGES.contact.push('E-mail me at <a href="mailto:bob@montev.com">bob@montev.com</a>.');
+
+
+      /******* GOOGLE ANALYTICS *******/
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-23169261-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+
+  </body>
+</html>
