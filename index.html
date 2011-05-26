@@ -34,9 +34,10 @@
 
     </script>
     <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>-->
-    <script>!window.jQuery && document.write('<scr'+'ipt src="js/lib/jquery.min.js"></scr'+'ipt>')</script> 
+    <script>!window.jQuery && document.write('<scr'+'ipt src="js/lib/jquery.min.js"></scr'+'ipt>')</script>
 
-    <script type="text/javascript" src="js/everydayjs.prototypes-d1.js"></script> 
+    <script type="text/javascript" src="js/lib/jquery.ba-bbq.js"></script>
+    <script type="text/javascript" src="js/everydayjs.prototypes-d1.js"></script>
     <script type="text/javascript" src="js/everydayjs.animate-d1.js"></script> 
     <script type="text/javascript" src="js/script1.js"></script> 
 
@@ -45,23 +46,24 @@
 
       /******* SETTINGS *******/
       var TITLE = "Bob Monteverde .com",
-          MENU = ['projects', 'about', 'contact'],
-          COLORS = ['black', 'green', 'blue', 'lightblue', 'grassgreen', 'orange', 'red'],
-          PAGES = {},
-          CURRENTLANG = 'en';
+          MENU = {
+            'en' : ['projects', 'about', 'contact']
+          },
+          PAGES = { en: {} },
+          COLORS = ['black', 'green', 'blue', 'lightblue', 'grassgreen', 'orange', 'red'];
 
       COLORS.index = 0;
 
-      $.each(MENU, function(index, pagename){ PAGES[pagename] = []; })
+      $.each(MENU['en'], function(index, pagename){ PAGES['en'][pagename] = []; })
 
-      PAGES.projects.push('GitHub: <a href="https://github.com/bobmonteverde">https://github.com/bobmonteverde</a>');
-      PAGES.projects.push('More projects to come soon.');
-      PAGES.projects.push('New projects will most likely show up on my GitHub before being listed here.');
+      PAGES['en'].projects.push('GitHub: <a href="https://github.com/bobmonteverde">https://github.com/bobmonteverde</a>');
+      PAGES['en'].projects.push('More projects to come soon.');
+      PAGES['en'].projects.push('New projects will most likely show up on my GitHub before being listed here.');
 
-      PAGES.about.push('I am currently working as a software engineer for <a href="https://www.novus.com">Novus Partners</a>, in NYC.  I work primarily on the front end of our web platform, developing interactive data visualizations.');
-      PAGES.about.push('We are hiring at Novus Partners.  If you are an experienced Scala developer and interested in working in NYC, please <a href="#" class="contact">contact me</a>.');
+      PAGES['en'].about.push('I am currently working as a software engineer for <a href="https://www.novus.com">Novus Partners</a>, in NYC.  I work primarily on the front end of our web platform, developing interactive data visualizations.');
+      PAGES['en'].about.push('We are hiring at Novus Partners.  If you are an experienced Scala developer and interested in working in NYC, please <a href="#" class="contact">contact me</a>.');
 
-      PAGES.contact.push('E-mail me at <a href="mailto:bob@montev.com">bob@montev.com</a>.');
+      PAGES['en'].contact.push('E-mail me at <a href="mailto:bob@montev.com">bob@montev.com</a>.');
 
 
       /******* GOOGLE ANALYTICS *******/

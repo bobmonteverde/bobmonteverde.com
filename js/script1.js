@@ -7,40 +7,59 @@
 var animate;
 
 (function($, undefined) {
+  var clang = $.bbq.getState('lang') || 'en';
 
   google.setOnLoadCallback(loadLanguages);
   function loadLanguages() {
     var $translate = $('<div id="translate"><span>Translate: </span></div>').appendTo('body');
-        $list = $('<select id="translateLang"></select>').appendTo($translate);
-        
-    for (lang in google.language.Languages) {
-      var translatable = google.language.isTranslatable(google.language.Languages[lang]);
+        $list = $('<select id="translateLang"></select>').appendTo($translate),
+        languages = google.language.Languages;
+
+    for (lang in languages) {
+      var translatable = google.language.isTranslatable(languages[lang]);
       //console.log(lang, translatable);
 
-      if (translatable) $('<option value="' + google.language.Languages[lang] + '" ' + (lang == 'ENGLISH' ? 'selected' : '') + '>' + lang + '</option>')
+      if (translatable) $('<option value="' + languages[lang] + '" ' + (lang == 'ENGLISH' ? 'selected' : '') + '>' + lang + '</option>')
         .appendTo($list);
     }
   }
 
-  function translateSite(lang) {
+  function translateSite(lang, callback) {
+    if (lang != 'en') $.bbq.pushState({'lang': lang});
+    else  $.bbq.removeState('lang');
+
+    if (typeof MENU[lang] != 'undefined') return true;
+
+    $.each(MENU['en'], function(index, link) {
+        MENU[lang][index] = translateString(link, '#' + link);
+    });
+
+    $.each(PAGES['en'], function(index, page) {
+        PAGES[lang][index] = translateString(page, )
+    });
+    /*
     (function stepSite(set) {
       $this = $(set[0]);
       google.language.translate($this.attr('id'), 'en', lang, function(result) {
         $this.find('.link').html(result.translation);
         set = set.slice(1);
         if (set.length)
-          stepSite(set);
-        else 
-          CURRENTLANG = lang;
+          window.setTimeout(stepSite(set), 0);
+        else {
+          clang = lang;
+          if (typeof callback === 'function') callback();
+        }
       })
     })($('#menu li'));
     $('.menu').css('font-size', ((lang == 'en') ? '28px' : '20px')); //TODO: should calc this based on menu text width
+    */
   }
 
+  //TODO: MEMOIZE this function (or maybe not due to above)
   function translateString(text, obj) {
-    if (CURRENTLANG == 'en') obj.html(text);
+    if (clang == 'en') obj.html(text);
 
-    google.language.translate(text, 'en', CURRENTLANG, function(result) {
+    google.language.translate(text, 'en', clang, function(result) {
       obj.html(result.translation);
     });
   }
@@ -109,11 +128,11 @@ var animate;
     });
 
       
-    //$menu.css('font-size', MENU.join(' ').calcFontSize(TITLE.width($heading) * .75, $menu.css('font-family')));
+    //$menu.css('font-size', MENU['en'].join(' ').calcFontSize(TITLE.width($heading) * .75, $menu.css('font-family')));
 
-    $.each(MENU, function(index, link) {
+    $.each(MENU['en'], function(index, link) {
       animate.append(function() { 
-        var $link = $('<li id="' + link + '"><span class="link">' + link + '</span><div class="contents"></div></li>'),
+        var $link = $('<li id="' + link + '"><span class="link">' + MENU[clang][index] + '</span><div class="contents"></div></li>'),
             w = $heading.html().width($heading);
         
         $link.appendTo($menu);
@@ -154,6 +173,15 @@ var animate;
 
     //setTimeout(animate.next, 500);
 
+    var currentPage = $.bbq.getState('page');
+    if (clang != 'en') animate.append(function() {
+        translateSite('currentLang', animate.next);
+    });
+
+    if (MENU['en'].has(currentPage)) animate.append(function() {
+        menuClick.call($('#' + currentPage));
+    });
+
 
     var menuClick = function() {
       var $this = $(this),
@@ -170,6 +198,7 @@ var animate;
             pagename = $this.attr('id');
 
         $('body').removeClass('ready');
+        $.bbq.pushState({'page': pagename});
 
 
         $menu.find('.contents').children().fadeOut(250, function() { $(this).remove(); });
@@ -183,14 +212,14 @@ var animate;
         $this.animate({'width': w}, 1000);
         $this.find('.link').animate({'padding-top': '0'}, 1000, function(){
           if ($(this).parents('li').hasClass('current')) {
-            $.each(PAGES[pagename], function(index, text) {
-                var container = $('<div></div>')
+            $.each(PAGES[clang][pagename], function(index, text) {
+                var container = $('<div>' + text + '</div>')
                   .appendTo($contents)
                   .css('display', 'none')
                   .fadeIn(500, function() {
                             $('body').addClass('ready');
                         });
-                translateString(text, container);
+                //translateString(text, container);
             });
           }
 
@@ -201,25 +230,26 @@ var animate;
       return true;
     };
 
-    var menuClose = function() {
+    var menuClose = function(callback) {
       var w = $heading.html().width($heading);
 
       animate.append(function() {
         $('body').removeClass('ready');
+        $.bbq.removeState('page');
 
-            //$menu.find('.contents').children().fadeOut(500, function() {
-            $menu.find('.contents').children().fadeOut(250, function() { $(this).remove(); });
+        $menu.find('.contents').children().fadeOut(250, function() { $(this).remove(); });
 
-            $menu.find('li').each(function(index, link){
-              $(link).animate({'width': $(link).html().width($('.link')) + 'px'}, 1000);
-              $(link).find('.link').animate({'padding-top': w * .8 - $(link).html().height($('.link'))}, 1000);
-              $(link).removeClass('current');
-            });
-            $box.animate({'width': w}, 1000, function() {
-                $('body').addClass('ready');
-            });
+        $menu.find('li').each(function(index, link){
+          $(link).animate({'width': $(link).html().width($('.link')) + 'px'}, 1000);
+          $(link).find('.link').animate({'padding-top': w * .8 - $(link).html().height($('.link'))}, 1000);
+          $(link).removeClass('current');
+        });
+        $box.animate({'width': w}, 1000, function() {
+            $('body').addClass('ready');
+        });
       });
 
+      if (typeof callback === 'function') callback();
       animate.next();
       return true;
     };
@@ -262,15 +292,14 @@ var animate;
 
     //Binds
     $('#translateLang').live('change', function() {
-       translateSite($(this).val());
-       menuClose();
+       translateSite($(this).val(), menuClose());
     });
     $.each(COLORS, function(index, color) {
        $('.chooseAcolor.' + color).live('click', function(){
           changeColor(color);
        });
     });
-    $.each(MENU, function(index, item) {
+    $.each(MENU['en'], function(index, item) {
         $('.ready .' + item).live('click', function() { menuClick.call($('#' + item)); return false; });
     });
     $('.ready #menu').find('li').live('click', menuClick);
